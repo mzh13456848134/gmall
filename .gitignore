@@ -2,7 +2,8 @@
 *.class
 .idea
 *.imi
-
+mvnw*
+.mvn
 # Log file
 *.log
 
