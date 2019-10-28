@@ -3,9 +3,13 @@ package com.atguigu.core.bean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @ApiModel
 @Data
+@Setter
+@Getter
 public class Resp<T> {
 
     @ApiModelProperty(name = "code",value = "响应状态码")
