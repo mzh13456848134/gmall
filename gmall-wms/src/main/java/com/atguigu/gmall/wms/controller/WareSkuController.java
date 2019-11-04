@@ -1,6 +1,7 @@
 package com.atguigu.gmall.wms.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
@@ -33,6 +34,17 @@ public class WareSkuController {
     @Autowired
     private WareSkuService wareSkuService;
 
+
+
+
+    //http://127.0.0.1:8888/wms/waresku/1
+    //Request Method: GET
+    @ApiOperation("获取某个sku的库存信息")
+    @GetMapping("{skuId}")
+    public Resp<List<WareSkuEntity>> queryWareSkuBySkuId(@PathVariable("skuId") Long skuId){
+        List<WareSkuEntity> wareSkuEntities = this.wareSkuService.queryWareSkuBySkuId(skuId);
+        return Resp.ok(wareSkuEntities);
+    }
     /**
      * 列表
      */

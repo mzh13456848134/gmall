@@ -1,12 +1,13 @@
 package com.atguigu.gmall.pms.controller;
 
 import java.util.Arrays;
-import java.util.Map;
+import java.util.List;
 
 
 import com.atguigu.core.bean.PageVo;
 import com.atguigu.core.bean.QueryCondition;
 import com.atguigu.core.bean.Resp;
+import com.atguigu.gmall.pms.vo.AttrVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,33 @@ public class AttrGroupController {
     @Autowired
     private AttrGroupService attrGroupService;
 
+    //http://127.0.0.1:8888/pms/attrgroup/withattrs/cat/225
+    @ApiOperation("查询分类下的组及规格参数")
+    @GetMapping("withattrs/cat/{catId}")
+    public Resp<List<AttrVo>> queryByCatId(@PathVariable("catId") Long catId){
+        List<AttrVo> groupCatVos =  this.attrGroupService.queryByCatId(catId);
+        return Resp.ok(groupCatVos);
+    }
+
+
+
+    //http://127.0.0.1:8888/pms/attrgroup/withattr/1
+
+    @GetMapping("withattr/{gid}")
+    public Resp<AttrVo> queryAttrAndAttrgroupByGid(@PathVariable("gid")Long gid){
+        AttrVo attrVo  =  this.attrGroupService.queryAttrAndAttrgroupByGid(gid);
+        return Resp.ok(attrVo);
+    }
+
+
+
+    //http://127.0.0.1:8888/pms/attrgroup/225?t=1572581765477&limit=10&page=1
+    @ApiOperation("查询三级分类的分组")
+    @GetMapping("{catId}")
+    public Resp<PageVo> queryAttrGroupBycatId(QueryCondition condition,@PathVariable(value = "catId",required = false) Long catId){
+        PageVo pageVo = this.attrGroupService.queryAttrGroupBycatId(condition,catId);
+        return Resp.ok(pageVo);
+    }
     /**
      * 列表
      */

@@ -1,6 +1,7 @@
 package com.atguigu.gmall.pms.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
@@ -33,6 +34,15 @@ public class SkuInfoController {
     @Autowired
     private SkuInfoService skuInfoService;
 
+
+
+    //http://127.0.0.1:8888/pms/skuinfo/1
+    @ApiOperation("查询商品的所有库存信息")
+    @GetMapping("{spuId}")
+    public Resp<List<SkuInfoEntity>> querySkuInfoBySpuId(@PathVariable("spuId") Long spuId){
+        List<SkuInfoEntity> skuInfoEntities = this.skuInfoService.querySkuInfoBySpuId(spuId);
+        return Resp.ok(skuInfoEntities);
+    }
     /**
      * 列表
      */
