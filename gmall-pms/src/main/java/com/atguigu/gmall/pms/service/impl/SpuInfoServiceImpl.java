@@ -2,9 +2,10 @@ package com.atguigu.gmall.pms.service.impl;
 
 import com.atguigu.gmall.pms.dao.*;
 import com.atguigu.gmall.pms.entity.*;
-import com.atguigu.gmall.pms.fegin.SmsFegin;
+
 import com.atguigu.gmall.pms.service.SkuImagesService;
 import com.atguigu.gmall.pms.vo.*;
+import feign.SmsFegin;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
+
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -25,6 +26,7 @@ import com.atguigu.core.bean.QueryCondition;
 
 import com.atguigu.gmall.pms.service.SpuInfoService;
 import org.springframework.util.CollectionUtils;
+import vo.SkuSaleVo;
 
 
 @Service("spuInfoService")
