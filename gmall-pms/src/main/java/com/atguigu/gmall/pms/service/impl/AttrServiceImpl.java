@@ -45,6 +45,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
             wrapper.eq("catelog_id",cid);
         }
 
+
         IPage<AttrEntity> page = this.page(
                 new Query<AttrEntity>().getPage(condition),
                 wrapper

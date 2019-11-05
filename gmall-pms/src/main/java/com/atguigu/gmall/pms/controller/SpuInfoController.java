@@ -57,7 +57,16 @@ public class SpuInfoController {
 
         return Resp.ok(page);
     }
+    /**
+     * 列表
+     */
+    @ApiOperation("分页查询(排序)")
+    @PostMapping("save/list")
+    public Resp<PageVo> querylist(@RequestBody QueryCondition queryCondition) {
+        PageVo page = spuInfoService.queryPage(queryCondition);
 
+        return Resp.ok(page);
+    }
 
     /**
      * 信息
