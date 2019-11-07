@@ -21,6 +21,7 @@ import com.atguigu.core.bean.QueryCondition;
 import com.atguigu.gmall.sms.dao.SkuBoundsDao;
 import com.atguigu.gmall.sms.entity.SkuBoundsEntity;
 import com.atguigu.gmall.sms.service.SkuBoundsService;
+import org.springframework.transaction.annotation.Transactional;
 import vo.SkuSaleVo;
 
 
@@ -43,6 +44,7 @@ public class SkuBoundsServiceImpl extends ServiceImpl<SkuBoundsDao, SkuBoundsEnt
     }
 
     @Override
+    @Transactional
     public void bigSave(SkuSaleVo skuSaleVo) {
         //3.营销相关的3张表
         //3.1SkuBounds表
