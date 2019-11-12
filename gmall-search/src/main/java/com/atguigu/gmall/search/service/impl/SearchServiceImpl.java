@@ -2,6 +2,7 @@ package com.atguigu.gmall.search.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.atguigu.gmall.search.service.SearchService;
+import com.atguigu.gmall.search.vo.GoodsVo;
 import com.atguigu.gmall.search.vo.SearchParamVO;
 import com.atguigu.gmall.search.vo.SearchResponse;
 import com.atguigu.gmall.search.vo.SearchResponseAttrVO;
@@ -133,12 +134,10 @@ public class SearchServiceImpl implements SearchService {
         }
 
 
-
-
         //解析商品列表的结果集
 
-
-        response.setProducts(null);
+        List<GoodsVo> goodsVos = result.getSourceAsObjectList(GoodsVo.class, false);
+        response.setProducts(goodsVos);
 
         return response;
     }

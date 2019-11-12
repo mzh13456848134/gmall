@@ -2,9 +2,12 @@ package com.atguigu.gmall.pms.service.impl;
 
 import com.atguigu.gmall.pms.dao.AttrAttrgroupRelationDao;
 import com.atguigu.gmall.pms.dao.AttrDao;
+import com.atguigu.gmall.pms.dao.ProductAttrValueDao;
 import com.atguigu.gmall.pms.entity.AttrAttrgroupRelationEntity;
 import com.atguigu.gmall.pms.entity.AttrEntity;
+import com.atguigu.gmall.pms.entity.ProductAttrValueEntity;
 import com.atguigu.gmall.pms.vo.AttrVo;
+import com.atguigu.gmall.pms.vo.GroupVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +37,8 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
     @Autowired
     private  AttrDao attrDao;
 
-
+    @Autowired
+    private ProductAttrValueDao productAttrValueDao;
 
     @Override
     public PageVo queryPage(QueryCondition params) {
@@ -106,6 +110,22 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
             return attrVos;
         }
         return null;
+    }
+
+    @Override
+    public List<GroupVo> queryGroupVOByCid(Long cid, Long spuId) {
+        List<AttrGroupEntity> attrGroupEntities = this.list(new QueryWrapper<AttrGroupEntity>().eq("catelog_id", cid));
+        if(CollectionUtils.isEmpty(attrGroupEntities)){
+            return null;
+        }
+        List<GroupVo> groupVos = attrGroupEntities.stream().map(attrGroupEntity -> {
+            GroupVo groupVo = new GroupVo();
+            groupVo.setGrupName(attrGroupEntity.getAttrGroupName());
+            List<ProductAttrValueEntity> productAttrValueEntities = this.productAttrValueDao.queryByGidAndSpuId(spuId, cid);
+            groupVo.setBaseAttr(productAttrValueEntities);
+            return groupVo;
+        }).collect(Collectors.toList());
+        return groupVos;
     }
 
 }

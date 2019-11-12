@@ -1,6 +1,7 @@
 package com.atguigu.gmall.sms.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.atguigu.gmall.sms.entity.SkuBoundsEntity;
 import com.atguigu.gmall.sms.service.SkuBoundsService;
+import vo.ItemSaleVo;
 import vo.SkuSaleVo;
 
 
@@ -32,6 +34,11 @@ public class SkuBoundsController {
     @Autowired
     private SkuBoundsService skuBoundsService;
 
+    @GetMapping("item/sales/{skuId}")
+    public Resp<List<ItemSaleVo>> queryItemSaleVos(@PathVariable("skuId") Long skuId){
+        List<ItemSaleVo> itemSaleVos = this.skuBoundsService.queryItemSaleVos(skuId);
+        return Resp.ok(itemSaleVos);
+    }
     /**
      * 列表
      */

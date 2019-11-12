@@ -8,14 +8,13 @@ import com.atguigu.gmall.pms.vo.*;
 import feign.SmsFegin;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -50,6 +49,9 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
     @Autowired
     private SkuImagesService skuImagesService;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
     @Override
     public PageVo queryPage(QueryCondition params) {
         IPage<SpuInfoEntity> page = this.page(
@@ -101,7 +103,15 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         //2.1skuInfo表
         saveSku(saveInfoVo, spuId);
 
+        sendMsg(spuId,"insert");
 
+    }
+
+    public void sendMsg(Long spuId,String type) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id",spuId);
+        map.put("type",type);
+        this.amqpTemplate.convertAndSend("GMALL-PMS-EXCHANGE","item.insert",map);
     }
 
 

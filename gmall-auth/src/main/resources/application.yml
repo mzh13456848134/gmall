@@ -1,0 +1,15 @@
+server:
+  port: 8089
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+
+gmall:
+  jwt:
+    pubKeyPath: E:\\temp\\rsa\\rsa.pub #公钥存储路径
+    priKeyPath: E:\\temp\\rsa\\rsa.pri #私钥存储路径
+    secret: sjd547+-12~&$(&*@djsdak  #随便填写越复杂越好，随机盐
+    expire: 30 #过期时间，单位分钟
+    cookieName: GMALL_TOKEN

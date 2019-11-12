@@ -4,4 +4,8 @@ spring:
   elasticsearch:
     jest:
       uris: http://192.168.177.177:9200
-
+  rabbitmq:
+    host: 192.168.177.177
+    virtual-host: /mzh
+    username: mzh
+    password: mzh

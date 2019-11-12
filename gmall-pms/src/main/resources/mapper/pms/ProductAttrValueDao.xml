@@ -17,4 +17,14 @@
     <select id="querySearchAttrValue" resultMap="productAttrValueMap">
         select * from pms_product_attr_value a INNER JOIN pms_attr b ON a.attr_id = b.attr_id WHERE a.spu_id = #{spuId} AND b.search_type = 1
     </select>
+
+
+
+   <!-- List<ProductAttrValueEntity> queryByGidAndSpuId(@Param("spuId") Long spudId, @Param("groupId") Long groupId);-->
+    <select id="queryByGidAndSpuId" resultMap="productAttrValueMap">
+        SELECT b.* FROM pms_attr_attrgroup_relation a
+        INNER JOIN pms_product_attr_value b
+        ON a.attr_id = b.attr_id WHERE a.attr_group_id = #{groupId} and b.spu_id = #{spuId}
+
+    </select>
 </mapper>

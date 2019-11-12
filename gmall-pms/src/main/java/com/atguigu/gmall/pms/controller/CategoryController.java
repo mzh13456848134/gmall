@@ -8,6 +8,7 @@ import java.util.Map;
 import com.atguigu.core.bean.PageVo;
 import com.atguigu.core.bean.QueryCondition;
 import com.atguigu.core.bean.Resp;
+import com.atguigu.gmall.pms.vo.CategorySonVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,15 @@ import com.atguigu.gmall.pms.service.CategoryService;
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
+
+
+
+    @ApiOperation("根据cate_id查询指定的子菜单")
+    @GetMapping("cates")
+    public Resp<List<CategorySonVo>> queryCategoryByPid(@RequestParam("pid") Integer pid){
+        List<CategorySonVo> categorySonVos = this.categoryService.queryCategoryByPid(pid);
+        return Resp.ok(categorySonVos);
+    }
 
 
     @ApiOperation("根据分类等级或者父id查询分类")

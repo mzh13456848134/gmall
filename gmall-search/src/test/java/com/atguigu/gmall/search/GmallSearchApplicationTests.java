@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 @SpringBootTest
 class GmallSearchApplicationTests {
-
+/*
     @Autowired 
     JestClient jestClient;
     
@@ -32,10 +32,10 @@ class GmallSearchApplicationTests {
     private GmallPmsFegin gmallPmsFegin;
     
     @Autowired
-    private GmallWmsFegin gmallWmsFegin;
+    private GmallWmsFegin gmallWmsFegin;*/
     @Test
     public void importData(){
-        Long pageNum = 1L;
+       /* Long pageNum = 1L;
         Long pageSize = 100L;
         do{
             //分页查询已上架商品，即spu中publish_status = 1的商品
@@ -126,7 +126,7 @@ class GmallSearchApplicationTests {
                 });
             }
             pageNum++;
-        }while (pageNum == 100);
+        }while (pageNum == 100);*/
     }
 
 
