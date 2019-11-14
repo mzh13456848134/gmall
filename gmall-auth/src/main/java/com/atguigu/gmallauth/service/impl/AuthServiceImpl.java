@@ -42,6 +42,8 @@ public class AuthServiceImpl implements AuthService {
 
             //3.存在生成jwt
             Map<String,Object> map = new HashMap<String,Object>();
+            map.put("id", memberEntity.getId());
+            map.put("username", memberEntity.getUsername());
             String token = JwtUtils.generateToken(map, jwtProperties.getPrivateKey(), jwtProperties.getExpire());
 
 

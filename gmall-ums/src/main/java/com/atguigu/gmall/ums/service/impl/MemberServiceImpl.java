@@ -2,6 +2,8 @@ package com.atguigu.gmall.ums.service.impl;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -20,6 +22,9 @@ import java.util.UUID;
 
 @Service("memberService")
 public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> implements MemberService {
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     @Override
     public PageVo queryPage(QueryCondition params) {
@@ -44,9 +49,22 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
     }
 
     @Override
-    public void register(MemberEntity memberEntity, String code) {
+    public String register(MemberEntity memberEntity, String code) {
 
         //验证码校验未完成待续。。。。。
+        if(StringUtils.isEmpty(code)){
+            return "请输入验证码";
+        }
+
+        String phoneCode = redisTemplate.opsForValue().get("code:" + memberEntity.getMobile() + ":code");
+        if(StringUtils.isEmpty(phoneCode)){
+            return "请获取验证码";
+        }
+
+        if(!StringUtils.equals(phoneCode,code)){
+            return "输入验证码错误";
+        }
+
         //生成盐
         String salt = StringUtils.substring(UUID.randomUUID().toString(), 0, 6);
         memberEntity.setSalt(salt);
@@ -63,6 +81,9 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
         //添加到数据库
         this.save(memberEntity);
 
+        redisTemplate.delete("code:" + memberEntity.getMobile() + ":code");
+
+        return "注册成功";
 
     }
 

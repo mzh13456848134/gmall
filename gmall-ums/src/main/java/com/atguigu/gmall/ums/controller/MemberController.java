@@ -45,8 +45,8 @@ public class MemberController {
     //POST /ums/member/register
     @PostMapping("register")
     public Resp<Object> register(MemberEntity memberEntity,@RequestParam("code")String code){
-        this.memberService.register(memberEntity,code);
-        return Resp.ok(null);
+        String register = this.memberService.register(memberEntity, code);
+        return Resp.ok(register);
     }
 
 

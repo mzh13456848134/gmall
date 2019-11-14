@@ -16,7 +16,7 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 @Component
-@EnableConfigurationProperties
+@EnableConfigurationProperties(JwtProperties.class)
 public class AuthGatewayFilter implements GatewayFilter, Ordered {
 
     @Autowired

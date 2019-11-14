@@ -27,6 +27,9 @@ public class SkuSaleAttrValueServiceImpl extends ServiceImpl<SkuSaleAttrValueDao
 
     @Autowired
     private SkuInfoDao skuInfoDao;
+
+    @Autowired
+    private SkuSaleAttrValueDao skuSaleAttrValueDao;
     @Override
     public PageVo queryPage(QueryCondition params) {
         IPage<SkuSaleAttrValueEntity> page = this.page(
@@ -45,6 +48,12 @@ public class SkuSaleAttrValueServiceImpl extends ServiceImpl<SkuSaleAttrValueDao
         }
         List<Long> skuIds = skuInfoEntities.stream().map(skuInfoEntity -> skuInfoEntity.getSkuId()).collect(Collectors.toList());
         List<SkuSaleAttrValueEntity> skuSaleAttrValueEntities = this.list(new QueryWrapper<SkuSaleAttrValueEntity>().in("sku_id", skuIds));
+        return skuSaleAttrValueEntities;
+    }
+
+    @Override
+    public List<SkuSaleAttrValueEntity> querySaleAttrValuesBySkuId(Long skuId) {
+        List<SkuSaleAttrValueEntity> skuSaleAttrValueEntities = this.skuSaleAttrValueDao.selectList(new QueryWrapper<SkuSaleAttrValueEntity>().eq("sku_id", skuId));
         return skuSaleAttrValueEntities;
     }
 

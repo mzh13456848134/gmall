@@ -12,9 +12,27 @@ import java.util.List;
 
 public interface GmallPmsApi {
 
+    /**
+     * 根据skuid查询sku的销售属性
+     * @param skuId
+     * @return
+     */
+    @GetMapping("pms/skusaleattrvalue/sku/{skuId}")
+    public Resp<List<SkuSaleAttrValueEntity>> querySaleAttrValuesBySkuId(@PathVariable("skuId")Long skuId);
+    /**
+     * 根据spuid和cid查询分组属性
+     * @param cid
+     * @param spuId
+     * @return
+     */
     @GetMapping("pms/attrgroup/item/group/{cid}/{spuId}")
     public Resp<List<GroupVo>> queryGroupVOByCid(@PathVariable("cid")Long cid, @PathVariable("spuId") Long spuId);
 
+    /**
+     * 根据spuid查询spu描述信息
+     * @param spuId
+     * @return
+     */
     @GetMapping("pms/spuinfodesc/info/{spuId}")
     public Resp<SpuInfoDescEntity> querySpuDescById(@PathVariable("spuId") Long spuId);
     /**

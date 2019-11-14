@@ -74,8 +74,6 @@ public class ItemListener {
                     e.printStackTrace();
                 }
             });
-
-
         }
     }
 

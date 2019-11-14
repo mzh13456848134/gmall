@@ -1,0 +1,14 @@
+server:
+  port: 2688
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+  redis:
+    host: 192.168.177.177
+sms:
+  host: http://dingxin.market.alicloudapi.com
+  path: /dx/sendSms
+  method : POST
+  appcode: 097c91c157a146069887289feb40ceae
