@@ -5,6 +5,11 @@ spring:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848
+  rabbitmq:
+    host: 192.168.177.177
+    username: mzh
+    password: mzh
+    virtual-host: /mzh
   redis:
     host: 192.168.177.177
 sms:

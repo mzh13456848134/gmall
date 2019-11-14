@@ -66,8 +66,8 @@ public class AliSmsServiceImpl implements AliSmsService {
           querys.put("mobile", phoneNum);
           querys.put("param", "code:" + uuid);
           querys.put("tpl_id", "TP1711063");
-          Boolean smsFlag = smsTemplate.sendSms(querys);
-          if(!smsFlag) { return "发送验证码失败"; }
+          //Boolean smsFlag = smsTemplate.sendSms(querys);
+          //if(!smsFlag) { return "发送验证码失败"; }
 
         // 验证码存储到redis中保存5分钟
         redisTemplate.opsForValue().set(codeStr, uuid, 5, TimeUnit.MINUTES);
@@ -82,5 +82,29 @@ public class AliSmsServiceImpl implements AliSmsService {
         redisTemplate.opsForValue().set(codeContStr, count + "", expire, TimeUnit.MINUTES);
 
         return "验证码发送成功";
+    }
+
+    @Override
+    public String sendRegisterMess(String phoneNum) {
+        // 1.判断电话号码是否符合格式要求
+        /*String regex = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(166)|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$";
+        if (phoneNum.length() != 11) {
+            return "手机号码格式不正确";
+        } else {
+            Pattern p = Pattern.compile(regex);
+            Matcher m = p.matcher(phoneNum);
+            if (!m.matches()) {
+                return "手机号码格式不正确";
+            }
+        }*/
+
+        // 发送注册成功消息的模板
+        Map<String, String> querys = new HashMap<String, String>();
+        querys.put("mobile", phoneNum);
+        querys.put("param", "code:" + "resu");
+        querys.put("tpl_id", "TP1711063");
+       // Boolean smsFlag = smsTemplate.sendSms(querys);
+        //if(!smsFlag) { return "发送失败"; }
+        return "发送成功";
     }
 }

@@ -23,4 +23,10 @@ public class AliSmsController {
         String s = this.aliSmsService.sendSms(phoneNum);
         return Resp.ok(s);
     }
+
+    @GetMapping("send/mess")
+    public Resp<Object> sendRegisterMess(@RequestParam("phoneNum") String phoneNum){
+        String s = this.aliSmsService.sendRegisterMess(phoneNum);
+        return Resp.ok(s);
+    }
 }

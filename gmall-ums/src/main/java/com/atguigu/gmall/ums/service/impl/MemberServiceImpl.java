@@ -2,6 +2,7 @@ package com.atguigu.gmall.ums.service.impl;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,8 @@ import com.atguigu.gmall.ums.entity.MemberEntity;
 import com.atguigu.gmall.ums.service.MemberService;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -25,6 +28,9 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
     @Override
     public PageVo queryPage(QueryCondition params) {
@@ -82,6 +88,11 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
         this.save(memberEntity);
 
         redisTemplate.delete("code:" + memberEntity.getMobile() + ":code");
+
+        //注册成功，给用户发送短信提示
+        Map<String, Object> map = new HashMap<>();
+        map.put("phoneNum",memberEntity.getMobile());
+        this.amqpTemplate.convertAndSend("GMALL-ALISMS-EXCHANGE","sms.send",map);
 
         return "注册成功";
 
