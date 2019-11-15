@@ -2,6 +2,7 @@ package com.atguigu.gmallcart.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.atguigu.core.bean.Resp;
+import com.atguigu.gmall.cart.vo.CartItemVo;
 import com.atguigu.gmall.pms.entity.SkuInfoEntity;
 import com.atguigu.gmall.pms.entity.SkuSaleAttrValueEntity;
 import com.atguigu.gmallcart.feign.GmallPmsClient;
@@ -18,6 +19,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import vo.ItemSaleVo;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +27,10 @@ import java.util.stream.Collectors;
 public class CartServiceImpl implements CartService {
 
 
-    private static final String KEY_PREFIX  = "car:key:";
+    private static final String KEY_PREFIX  = "cart:key:";
+
+
+    private static  final String CURRENT_PRICE_PRIFIX = "cart:price:";
 
     @Autowired
     private StringRedisTemplate redisTemplate;
@@ -52,8 +57,6 @@ public class CartServiceImpl implements CartService {
             //JSON返序列化
             cart = JSON.parseObject(cartStr,Cart.class);
             cart.setCount(count + cart.getCount());
-
-
         }else{
             //如果没有该记录直接添加
 
@@ -61,10 +64,12 @@ public class CartServiceImpl implements CartService {
             Resp<SkuInfoEntity> skuInfoEntityResp = this.gmallPmsClient.querySkuById(skuId);
             SkuInfoEntity skuInfoEntity = skuInfoEntityResp.getData();
 
+            if(skuInfoEntity != null){
+                cart.setTitle(skuInfoEntity.getSkuTitle());
+                cart.setCheck(true);
+                cart.setPrice(skuInfoEntity.getPrice());
+            }
 
-            cart.setTitle(skuInfoEntity.getSkuTitle());
-            cart.setCheck(true);
-            cart.setPrice(skuInfoEntity.getPrice());
 
             //根据skuid获取sku销售属性
             Resp<List<SkuSaleAttrValueEntity>> skuSaleResp = this.gmallPmsClient.querySaleAttrValuesBySkuId(skuId);
@@ -72,11 +77,13 @@ public class CartServiceImpl implements CartService {
             cart.setSkuAttrValue(skuSaleAttrValueEntityList);
             cart.setDefaultImage(skuInfoEntity.getSkuDefaultImg());
 
+
             Resp<List<ItemSaleVo>> itemSaleResp = this.gmallSmsClient.queryItemSaleVos(skuId);
             List<ItemSaleVo> itemSaleVos = itemSaleResp.getData();
             cart.setSales(itemSaleVos);
 
-            hashOps.put(skuId.toString(),JSON.toJSONString(cart));
+            this.redisTemplate.opsForValue().set(CURRENT_PRICE_PRIFIX + skuId,skuInfoEntity.getPrice().toString());
+            //hashOps.put(skuId.toString(),JSON.toJSONString(cart));
         }
 
         //将cart信息同步到redis中
@@ -113,7 +120,13 @@ public class CartServiceImpl implements CartService {
         //如果临时用的购物车有数据，直接解析
         List<Cart> carts = null;
         if(!CollectionUtils.isEmpty(cartJsonStr)){
-            carts = cartJsonStr.stream().map(cartJson -> JSON.parseObject(cartJson.toString(), Cart.class)).collect(Collectors.toList());
+            carts = cartJsonStr.stream().map(
+            cartJson -> {
+                Cart cart = JSON.parseObject(cartJson.toString(), Cart.class);
+                cart.setPrice(new BigDecimal(this.redisTemplate.opsForValue().get(CURRENT_PRICE_PRIFIX + cart.getSkuId())));
+                return cart;
+            }
+            ).collect(Collectors.toList());
         }
 
         if(StringUtils.isEmpty(userInfoVO.getUserId())){
@@ -146,7 +159,17 @@ public class CartServiceImpl implements CartService {
         }
             //为空，直接返回登陆的购物车
         List<Object> userIdCartJSON = uesrIdOps.values();
-        return userIdCartJSON.stream().map(carJSON -> JSON.parseObject(carJSON.toString(),Cart.class)).collect(Collectors.toList());
+        if(CollectionUtils.isEmpty(userIdCartJSON)){
+            return null;
+        }
+        return userIdCartJSON.stream().map(
+            carJSON -> {
+                Cart cart = JSON.parseObject(carJSON.toString(), Cart.class);
+                cart.setPrice(new BigDecimal(this.redisTemplate.opsForValue().get(CURRENT_PRICE_PRIFIX+cart.getSkuId())));
+                return cart;
+
+            }
+        ).collect(Collectors.toList());
         //直接返回
     }
 
@@ -189,5 +212,34 @@ public class CartServiceImpl implements CartService {
             }
 
         });
+    }
+
+    @Override
+    public List<CartItemVo> queryCheckSkuInfo(Long userId) {
+        //ThreadLocal 只能用过浏览器请求与拿到，不能用过远程调用拿到
+        //UserInfoVO userInfoVO = LoginInterceptor.get();
+        String idkey = KEY_PREFIX + userId;
+        BoundHashOperations<String, Object, Object> uesrIdOps = this.redisTemplate.boundHashOps(idkey);
+
+        //为空，直接返回登陆的购物车
+        List<Object> userIdCartJSON = uesrIdOps.values();
+        if(CollectionUtils.isEmpty(userIdCartJSON)){
+            return null;
+        }
+
+
+        return userIdCartJSON.stream().map(
+                carJSON -> {
+                    Cart cart = JSON.parseObject(carJSON.toString(), Cart.class);
+                    cart.setPrice(new BigDecimal(this.redisTemplate.opsForValue().get(CURRENT_PRICE_PRIFIX + cart.getSkuId())));
+                    return cart;
+                }
+        ).filter(cart -> cart.getCheck()).map(cart -> {
+            CartItemVo cartItemVo = new CartItemVo();
+            cartItemVo.setCount(cart.getCount());
+            cartItemVo.setSkuId(cart.getSkuId());
+            return cartItemVo;
+        }).collect(Collectors.toList());
+        //直接返回
     }
 }

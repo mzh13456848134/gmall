@@ -1,6 +1,7 @@
 package com.atguigu.gmall.pms.controller;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,7 @@ import com.atguigu.gmall.pms.vo.SaveInfoVo;
 import com.atguigu.gmall.pms.vo.SaveVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +39,8 @@ public class SpuInfoController {
     @Autowired
     private SpuInfoService spuInfoService;
 
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
     //http://127.0.0.1:8888/pms/spuinfo?t=1572603972528&page=1&limit=10&key=&catId=0
     @ApiOperation("按照分类id分页查询商品列表")
@@ -102,10 +106,16 @@ public class SpuInfoController {
     @PreAuthorize("hasAuthority('pms:spuinfo:update')")
     public Resp<Object> update(@RequestBody SpuInfoEntity spuInfo){
 		spuInfoService.updateById(spuInfo);
-
+		this.sendMsg(spuInfo.getId(),"update");
         return Resp.ok(null);
     }
 
+    private void sendMsg(Long spuId,String type) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id",spuId);
+        map.put("type",type);
+        this.amqpTemplate.convertAndSend("GMALL-PMS-EXCHANGE","item."+type,map);
+    }
     /**
      * 删除
      */

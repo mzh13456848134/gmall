@@ -33,6 +33,9 @@ public class MemberController {
     @Autowired
     private MemberService memberService;
 
+
+
+
     //GET /ums/member/query
     @GetMapping("query")
     public Resp<MemberEntity> queryUser(@RequestParam("username")String username,@RequestParam("password")String password){

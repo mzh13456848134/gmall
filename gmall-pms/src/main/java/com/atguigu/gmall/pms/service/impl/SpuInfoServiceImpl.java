@@ -111,7 +111,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         Map<String, Object> map = new HashMap<>();
         map.put("id",spuId);
         map.put("type",type);
-        this.amqpTemplate.convertAndSend("GMALL-PMS-EXCHANGE","item.insert",map);
+        this.amqpTemplate.convertAndSend("GMALL-PMS-EXCHANGE","item."+type,map);
     }
 
 

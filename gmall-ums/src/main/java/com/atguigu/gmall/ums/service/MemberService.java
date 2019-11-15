@@ -22,5 +22,6 @@ public interface MemberService extends IService<MemberEntity> {
     String register(MemberEntity memberEntity, String code);
 
     MemberEntity queryUser(String username, String password);
+
 }
 

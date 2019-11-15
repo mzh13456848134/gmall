@@ -116,4 +116,6 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
         return memberEntity;
     }
 
+
+
 }

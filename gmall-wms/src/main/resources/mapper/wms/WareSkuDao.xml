@@ -14,4 +14,17 @@
     </resultMap>
 
 
+    <!--List<WareSkuEntity> queryWareSkuBySkuId(@Param("skuId") Long skuId, @Param("count") Integer count);-->
+    <select id="queryWareSkuBySkuId" resultMap="wareSkuMap">
+        SELECT * FROM wms_ware_sku WHERE sku_id = #{skuId} AND stock-stock_locked > #{count}
+    </select>
+
+    <!--Integer LockStore(@Param("id") Integer id,@Param("count") Integer count);-->
+    <update id="LockStore">
+        UPDATE wms_ware_sku SET stock_locked = stock_locked + #{count} where id = #{id}
+    </update>
+    <!--Integer unlock(@Param("id") Long id,@Param("count") Integer count);-->
+    <update id="unlock">
+        UPDATE wms_ware_sku SET stock_locked = stock_locked - #{count} where id = #{id}
+    </update>
 </mapper>

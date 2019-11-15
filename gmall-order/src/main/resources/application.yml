@@ -1,0 +1,20 @@
+server:
+  port: 8092
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+  redis:
+    host: 192.168.177.177
+  rabbitmq:
+    host: 192.168.177.177
+    virtual-host: /mzh
+    username: mzh
+    password: mzh
+gmall:
+  jwt:
+    pubKeyPath: E:\\temp\\rsa\\rsa.pub #公钥存储路径
+    cookieName: GMALL_TOKEN
+
+

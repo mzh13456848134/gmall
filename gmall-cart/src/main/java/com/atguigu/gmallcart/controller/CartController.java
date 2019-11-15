@@ -1,6 +1,7 @@
 package com.atguigu.gmallcart.controller;
 
 import com.atguigu.core.bean.Resp;
+import com.atguigu.gmall.cart.vo.CartItemVo;
 import com.atguigu.gmallcart.interceptor.LoginInterceptor;
 import com.atguigu.gmallcart.service.CartService;
 import com.atguigu.gmallcart.vo.Cart;
@@ -16,6 +17,8 @@ public class CartController {
 
     @Autowired
     private CartService cartService;
+
+
     @GetMapping("test")
     public Resp<Object> test(){
         return Resp.ok(LoginInterceptor.get());
@@ -50,5 +53,14 @@ public class CartController {
         this.cartService.checkCart(carts);
         return Resp.ok(null);
     }
+
+    @GetMapping("order/{userId}")
+    public Resp<List<CartItemVo>> queryCheckSkuInfo(@PathVariable("userId")Long userId){
+        List<CartItemVo> cartItemVos = this.cartService.queryCheckSkuInfo(userId);
+        return Resp.ok(cartItemVos);
+
+    }
+
+
 
 }
